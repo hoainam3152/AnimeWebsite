@@ -1,0 +1,24 @@
+.login {
+	padding-top: 130px;
+	padding-bottom: 120px;
+}
+
+.login__register {
+	padding-left: 30px;
+}
+
+.login__register h3 {
+	color: #ffffff;
+	font-weight: 700;
+	font-family: "Oswald", sans-serif;
+	margin-bottom: 30px;
+}
+
+.login__register .primary-btn {
+	background: #e53637;
+	padding: 12px 42px;
+}
+
+.login__social {
+	padding-top: 52px;
+}
