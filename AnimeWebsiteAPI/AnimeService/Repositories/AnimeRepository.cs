@@ -5,7 +5,7 @@ using System.Linq;
 
 namespace AnimeService.Repositories
 {
-    public class AnimeRepository : IAnimeRepository
+    public class AnimeRepository : IRepository<Anime>
     {
         private readonly IDatabase _database;
 
