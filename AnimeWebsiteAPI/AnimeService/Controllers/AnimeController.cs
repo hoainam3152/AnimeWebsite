@@ -1,15 +1,18 @@
-﻿using AnimeService.Services;
+﻿using System.Net;
+using AnimeService.Constants;
+using AnimeService.Interfaces.ServiceInterfaces;
+using CoreApiResponse;
 using Microsoft.AspNetCore.Mvc;
 
 namespace AnimeService.Controllers
 {
     [Route("v1/api/[controller]")]
     [ApiController]
-    public class AnimeController : Controller
+    public class AnimeController : BaseController
     {
-        private readonly AnimeServiceCore _animeService;
+        private readonly IAnimeService _animeService;
 
-        public AnimeController(AnimeServiceCore animeService)
+        public AnimeController(IAnimeService animeService)
         {
             this._animeService = animeService;
         }
@@ -19,16 +22,16 @@ namespace AnimeService.Controllers
         {
             try
             {
-                var anime = await _animeService.GetAllAnimesAsync();
-                if (anime == null || !anime.Any())
+                var animes = await _animeService.GetAllAsync();
+                if (animes.Any())
                 {
-                    return NotFound();
+                    return CustomResult(ResponseMessage.SUCCESSFUL, animes, HttpStatusCode.OK);
                 }
-                return Ok(anime);
+                return CustomResult(ResponseMessage.EMPTY, HttpStatusCode.NotFound);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                throw;
+                return CustomResult(ex.Message, HttpStatusCode.BadRequest);
             }
         }
 
@@ -37,16 +40,16 @@ namespace AnimeService.Controllers
         {
             try
             {
-                var anime = await _animeService.GetAnimeByIdAsync(id);
-                if (anime == null)
+                var anime = await _animeService.GetByIdAsync(id);
+                if (anime != null)
                 {
-                    return NotFound();
+                    return CustomResult(ResponseMessage.SUCCESSFUL, anime, HttpStatusCode.OK);
                 }
-                return Ok(anime);
+                return CustomResult(ResponseMessage.DATA_NOT_FOUND, HttpStatusCode.NotFound);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                throw;
+                return CustomResult(ex.Message, HttpStatusCode.BadRequest);
             }
         }
     }
