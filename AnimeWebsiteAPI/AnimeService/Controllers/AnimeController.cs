@@ -38,18 +38,25 @@ namespace AnimeService.Controllers
         [HttpGet("id")]
         public async Task<IActionResult> GetAnimeByIdAsync(int id)
         {
-            try
+            if (ModelState.IsValid)
             {
-                var anime = await _animeService.GetByIdAsync(id);
-                if (anime != null)
+                try
                 {
-                    return CustomResult(ResponseMessage.SUCCESSFUL, anime, HttpStatusCode.OK);
+                    var anime = await _animeService.GetByIdAsync(id);
+                    if (anime != null)
+                    {
+                        return CustomResult(ResponseMessage.SUCCESSFUL, anime, HttpStatusCode.OK);
+                    }
+                    return CustomResult(ResponseMessage.DATA_NOT_FOUND, HttpStatusCode.NotFound);
                 }
-                return CustomResult(ResponseMessage.DATA_NOT_FOUND, HttpStatusCode.NotFound);
+                catch (Exception ex)
+                {
+                    return CustomResult(ex.Message, HttpStatusCode.BadRequest);
+                }
             }
-            catch (Exception ex)
+            else
             {
-                return CustomResult(ex.Message, HttpStatusCode.BadRequest);
+                return BadRequest(ModelState);
             }
         }
     }
