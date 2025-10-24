@@ -1,5 +1,5 @@
 export interface IAnime {
-    id: number;
+    animeId: number;
     title: string;
     alternateTitle: string;
     coverImage: string;

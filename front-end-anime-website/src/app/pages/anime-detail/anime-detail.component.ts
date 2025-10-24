@@ -3,7 +3,8 @@ import { AnimeService } from '../../core/service/anime.service';
 import { map, Observable, switchMap } from 'rxjs';
 import { IAnime } from '../../core/models/interfaces/anime.interface';
 import { AsyncPipe } from '@angular/common';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, ParamMap } from '@angular/router';
+import { IResponseData } from '../../core/models/interfaces/response-data.interface';
 
 @Component({
   selector: 'app-anime-detail',
@@ -13,7 +14,6 @@ import { ActivatedRoute } from '@angular/router';
 })
 export class AnimeDetailComponent implements OnInit {
   anime$!: Observable<IAnime>;
-  id: number | null = null;
 
   private animeService = inject(AnimeService);
   private route = inject(ActivatedRoute);
@@ -22,12 +22,18 @@ export class AnimeDetailComponent implements OnInit {
     this.getAnimeDetail();
   }
 
-  getAnimeDetail() {
+  getAnimeDetail(): void {
     this.anime$ = this.route.paramMap.pipe(
-      switchMap(param => {
-        this.id = Number(param.get('id'));
-        return this.animeService.getAnimeDetail(this.id);
-      })
+      switchMap((params: ParamMap) => {
+        const idString = params.get('id');
+
+        if (idString) {
+          return this.animeService.getAnimeDetail(Number(idString));
+        }
+
+        return new Observable<IResponseData<IAnime>>();
+      }),
+      map((response: IResponseData<IAnime>) => response.data)
     );
   }
 }

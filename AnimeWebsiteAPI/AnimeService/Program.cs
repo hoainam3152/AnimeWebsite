@@ -1,8 +1,10 @@
 using AnimeService.Entities;
+using AnimeService.Helpers;
 using AnimeService.Interfaces;
 using AnimeService.Interfaces.ServiceInterfaces;
 using AnimeService.Repositories;
 using AnimeService.Services;
+using Microsoft.Extensions.DependencyInjection;
 using RepoDb;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -32,6 +34,8 @@ builder.Services.AddCors(options =>
                 .AllowAnyMethod();
             });
 });
+
+builder.Services.AddAutoMapper(typeof(Program));
 
 var app = builder.Build();
 
