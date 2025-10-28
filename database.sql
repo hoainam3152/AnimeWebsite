@@ -10,7 +10,7 @@ create table Anime (
 	Author nvarchar(255),
 	Synopsis nvarchar(MAX),
 	constraint PK_Anime primary key (AnimeId)
-)
+);
 
 insert into Anime (AnimeId, Title, AlternateTitle, CoverImage, Author, Synopsis)
 values 
@@ -27,3 +27,37 @@ values
 (113, N'Bảy Viên Ngọc Rồng Siêu Cấp', N'Dragon Ball Super, Dragon Ball Chou, 7 Viên Ngọc Rồng Siêu Cấp', N'dragon-ball-super.jpg', N'Chioka Kimitoshi', N'Dragon Ball Serie mới có tên là Super hoặc Chou dài tập chiếu trên truyền hình, bối cảnh nối tiếp sau cuộc chiến với Ma nhân Buu !!!'),
 (114, N'Jujutsu Kaisen - Chú Thuật Hồi Chiến', N'Chú Thuật Hồi Chiến, Sorcery Fight, Jujutsu Kaisen (TV)', N'jujustu-kaisen.jpg', N'Park Seong-Hu', N'Trong một thế giới nơi những con quỷ ăn thịt người không nghi ngờ gì, những mảnh vỡ của con quỷ huyền thoại và đáng sợ Ryoumen Sukuna đã bị thất lạc và nằm rải rác. Nếu bất kỳ con quỷ nào tiêu thụ các bộ phận cơ thể của Sukuna, sức mạnh mà chúng có được có thể phá hủy thế giới như chúng ta đã biết. May mắn thay, có một ngôi trường bí ẩn của các Phù thủy Jujutsu tồn tại để bảo vệ sự tồn tại bấp bênh của người sống khỏi xác sống!Yuuji Itadori là một học sinh trung học dành cả ngày để thăm ông nội nằm liệt giường của mình. Mặc dù anh ấy trông giống như một thiếu niên bình thường của bạn, nhưng sức mạnh thể chất to lớn của anh ấy là một điều đáng chú ý! Mọi câu lạc bộ thể thao đều muốn cậu tham gia, nhưng Itadori thà đi chơi với những đứa trẻ bị trường ruồng bỏ trong Câu lạc bộ huyền bí. Một ngày nọ, câu lạc bộ quản lý để có được bàn tay của họ trên một vật thể bị nguyền rủa bị phong ấn, nhưng họ ít biết nỗi kinh hoàng mà họ sẽ gây ra khi phá vỡ phong ấn ...'),
 (115, N'Solo Leveling 2nd Season - Tôi Thăng Cấp Một Mình Mùa 2', N'Solo Leveling SS2, Ore dake Level Up na Ken Season 2: Arise from the Shadow, Solo Leveling Season 2: Arise from the Shadow, Solo Leveling Second Season', N'solo-leveling-season2.jpg', N'Nakashige Shunsuke', N'Solo Leveling (Season 2): Arise From The Shadow tiếp tục câu chuyện của Sung Jinwoo, người từng được biết đến là "Thợ săn yếu nhất của toàn nhân loại". Sau khi sở hữu sức mạnh chưa từng có để được thăng cấp trong một hầm ngục, Jinwoo đã trở thành Vua Bóng Tối và có khả năng điều khiển một đội quân hùng hậu. Từ đây, anh chàng bắt đầu hành trình mới với hy vọng chữa khỏi bệnh cho mẹ mình.');
+
+
+--Database for AccountService
+
+create database AccountDatabase
+
+use AccountDatabase
+
+create table Role (
+	Id nvarchar(100),
+	Name nvarchar(255),
+	constraint PK_Role primary key (Id)
+);
+
+create table UserProfile (
+	Id nvarchar(100),
+	UserName nvarchar(255),
+	Email nvarchar(255),
+	PasswordHash nvarchar(max),
+	PhoneNumber nvarchar(20),
+	constraint PK_User primary key (Id)
+);
+
+create table UserRole (
+	UserId nvarchar(100),
+	RoleId nvarchar(100),
+	constraint PK_UserRole primary key (UserId, RoleId),
+	constraint FK_UserRole_User foreign key (UserId) references UserProfile(Id),
+	constraint FK_UserRole_Role foreign key (RoleId) references Role(Id),
+);
+
+DROP TABLE UserRole;
+DROP TABLE UserProfile;
+DROP TABLE Role;
