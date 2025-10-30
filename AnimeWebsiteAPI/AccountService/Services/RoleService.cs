@@ -1,21 +1,31 @@
-﻿using AccountService.Entities;
-using AccountService.Interfaces;
+﻿using AccountService.DTOs.Requests;
+using AccountService.DTOs.Response;
+using AccountService.Entities;
+using AccountService.Interfaces.RepositoryInterfaces;
 using AccountService.Interfaces.ServiceInterfaces;
+using AutoMapper;
 
 namespace AccountService.Services
 {
     public class RoleService : IRoleService
     {
-        private readonly IRepository<Role> _roleRepository;
+        private readonly IRoleRepository _roleRepository;
+        private readonly IMapper _mapper;
 
-        public RoleService(IRepository<Role> roleRepository)
+        public RoleService(IRoleRepository roleRepository, IMapper mapper)
         {
             this._roleRepository = roleRepository;
+            this._mapper = mapper;
         }
 
-        public Task<object?> AddAsync(Role entity)
+        public async Task<object?> AddAsync(RoleCreateRequest entity)
         {
-            throw new NotImplementedException();
+            Role role = new Role {
+                Id = Guid.NewGuid().ToString(),
+                Name = entity.Name 
+            };
+            var newId = await _roleRepository.AddAsync(role);
+            return newId;
         }
 
         public Task<object> DeleteAsync(object id)
@@ -23,17 +33,24 @@ namespace AccountService.Services
             throw new NotImplementedException();
         }
 
-        public async Task<IEnumerable<Role?>> GetAllAsync()
+        public async Task<IEnumerable<RoleResponse?>> GetAllAsync()
         {
-            return await _roleRepository.GellAllAsync();
+            var roles = await _roleRepository.GellAllAsync();
+            return _mapper.Map<IEnumerable<RoleResponse?>>(roles);
         }
 
-        public Task<Role?> GetByIdAsync(object id)
+        public async Task<RoleResponse?> GetByIdAsync(object id)
         {
-            throw new NotImplementedException();
+            var role = await _roleRepository.GetByIdAsync(id);
+            return _mapper.Map<RoleResponse?>(role);
         }
 
-        public Task<object> UpdateAsync(Role entity)
+        public async Task<object?> GetByNameAsync(string roleName)
+        {
+            return await _roleRepository.GetByNameAsync(roleName);
+        }
+
+        public Task<object> UpdateAsync(RoleCreateRequest entity)
         {
             throw new NotImplementedException();
         }

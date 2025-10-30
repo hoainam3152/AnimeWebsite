@@ -1,11 +1,17 @@
-﻿namespace AccountService.Entities
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace AccountService.Entities
 {
     public class UserProfile
     {
-        public string Id { get; set; }
-        public string UserName { get; set; }
-        public string Email { get; set; }
-        public string PasswordHash { get; set; }
+        [Required]
+        public string Id { get; set; } = string.Empty;
+        [Required]
+        public string UserName { get; set; } = string.Empty;
+        [Required]
+        public string Email { get; set; } = string.Empty;
+        [Required]
+        public string PasswordHash { get; set; } = string.Empty;
         public string? PhoneNumber { get; set; }
     }
 }

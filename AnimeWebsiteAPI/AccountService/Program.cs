@@ -1,9 +1,12 @@
+using System.Reflection;
 using AccountService.Entities;
+using AccountService.Helpers;
 using AccountService.Interfaces;
 using AccountService.Interfaces.RepositoryInterfaces;
 using AccountService.Interfaces.ServiceInterfaces;
 using AccountService.Repositories;
 using AccountService.Services;
+using Microsoft.Extensions.DependencyInjection;
 using RepoDb;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -16,17 +19,28 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 //Registering AccountService dependencies
-//Role Service
 builder.Services.AddScoped<IDatabase, SqlServerDatabase>();
-builder.Services.AddScoped<IRepository<Role>, RoleRepository>();
+
+//Role Service
+builder.Services.AddScoped<IRoleRepository, RoleRepository>();
 builder.Services.AddScoped<IRoleService, RoleService>();
 
 //Accout Service
 builder.Services.AddScoped<IUserProfileRepository, UserProfileRepository>();
-builder.Services.AddScoped<IAccountService, UserProfileService>();
+builder.Services.AddScoped<IUserProfileService, UserProfileService>();
 
 //Initialize RepoDb
 GlobalConfiguration.Setup().UseSqlServer();
+
+//Regiter HttpClient Factory
+builder.Services.AddHttpClient("UserRole", client =>
+{
+    client.BaseAddress = new Uri("");
+    client.Timeout = TimeSpan.FromSeconds(60);
+});
+
+//Register AutoMapper
+builder.Services.AddAutoMapper(typeof(Program));
 
 var app = builder.Build();
 
