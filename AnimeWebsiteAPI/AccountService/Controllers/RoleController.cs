@@ -1,5 +1,6 @@
 ﻿using System.Net;
 using AccountService.Constants;
+using AccountService.DTOs.Requests;
 using AccountService.Interfaces.ServiceInterfaces;
 using CoreApiResponse;
 using Microsoft.AspNetCore.Mvc;
@@ -28,6 +29,49 @@ namespace AccountService.Controllers
                     return CustomResult(ResponseMessage.SUCCESSFUL, roles, HttpStatusCode.OK);
                 }
                 return CustomResult(ResponseMessage.EMPTY, HttpStatusCode.NotFound);
+            }
+            catch (Exception ex)
+            {
+                return CustomResult(ex.Message, HttpStatusCode.BadRequest);
+            }
+        }
+
+        [HttpGet("id")]
+        public async Task<IActionResult> GetRoleByIdAsync(string id)
+        {
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    var role = await _roleService.GetByIdAsync(id);
+                    if (role != null)
+                    {
+                        return CustomResult(ResponseMessage.SUCCESSFUL, role, HttpStatusCode.OK);
+                    }
+                    return CustomResult(ResponseMessage.DATA_NOT_FOUND, HttpStatusCode.NotFound);
+                }
+                catch (Exception ex)
+                {
+                    return CustomResult(ex.Message, HttpStatusCode.BadRequest);
+                }
+            }
+            else
+            {
+                return BadRequest(ModelState);
+            }
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> CreateRoleAsynce(RoleCreateRequest request)
+        {
+            try
+            {
+                var role = await _roleService.AddAsync(request);
+                if (role != null)
+                {
+                    return CustomResult(ResponseMessage.SUCCESSFUL, role, HttpStatusCode.OK);
+                }
+                return CustomResult(ResponseMessage.CREATE_FAILED, HttpStatusCode.BadRequest);
             }
             catch (Exception ex)
             {

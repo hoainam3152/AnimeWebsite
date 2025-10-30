@@ -1,6 +1,6 @@
-﻿namespace AccountService.Entities
+﻿namespace AccountService.DTOs.Response
 {
-    public class Role
+    public class RoleResponse
     {
         public string Id { get; set; } = string.Empty;
         public string Name { get; set; } = string.Empty;

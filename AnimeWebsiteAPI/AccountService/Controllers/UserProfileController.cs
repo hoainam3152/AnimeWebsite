@@ -4,6 +4,7 @@ using AccountService.DTOs.Requests;
 using AccountService.Interfaces.ServiceInterfaces;
 using CoreApiResponse;
 using Microsoft.AspNetCore.Mvc;
+using RepoDb.Extensions;
 
 namespace AccountService.Controllers
 {
@@ -11,15 +12,15 @@ namespace AccountService.Controllers
     [Route("api/v1/[controller]")]
     public class UserProfileController : BaseController
     {
-        private readonly IAccountService _userService;
+        private readonly IUserProfileService _userService;
 
-        public UserProfileController(IAccountService userService)
+        public UserProfileController(IUserProfileService userService)
         {
             this._userService = userService;
         }
 
-        [HttpPost]
-        public async Task<IActionResult> Register(UserProfileRequest request)
+        [HttpPost("SignUp")]
+        public async Task<IActionResult> SignUp(UserProfileRequest request)
         {
             try
             {
@@ -36,6 +37,26 @@ namespace AccountService.Controllers
                 }
 
                 return CustomResult(ResponseMessage.CREATE_SUCCESSFUL, result, HttpStatusCode.OK);
+            }
+            catch (Exception ex)
+            {
+                return CustomResult(ex.Message, HttpStatusCode.BadRequest);
+            }
+        }
+
+        [HttpPost("SignIn")]
+        public async Task<IActionResult> SignIn(string email, string password)
+        {
+            try
+            {
+                var result = await _userService.Authentication(email, password);
+
+                if (result.IsNullOrEmpty())
+                {
+                    return CustomResult("Email hoặc mật khẩu không đúng", HttpStatusCode.BadRequest);
+                }
+
+                return CustomResult(ResponseMessage.SIGNIN_SUCCESSFUL, result, HttpStatusCode.OK);
             }
             catch (Exception ex)
             {

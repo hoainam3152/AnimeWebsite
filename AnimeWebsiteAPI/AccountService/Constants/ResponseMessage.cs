@@ -7,12 +7,14 @@
         public const string CREATE_SUCCESSFUL = "Create Successful";
         public const string UPDATE_SUCCESSFUL = "Update Successful";
         public const string DELETE_SUCCESSFUL = "Delete Successful";
+        public const string SIGNIN_SUCCESSFUL = "Sign In Successful";
 
         //Fail
         public const string FAILED = "Failed";
         public const string CREATE_FAILED = "Create Failed";
         public const string UPDATE_FAILED = "Update Failed";
         public const string DELETE_FAILED = "Delete Failed";
+        public const string SIGNIN_FAILED = "Sign In Failed";
 
         //Error
         public const string EMPTY = "Empty Data";

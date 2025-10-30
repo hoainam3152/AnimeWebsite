@@ -1,10 +1,11 @@
 ﻿using AccountService.Entities;
 using AccountService.Interfaces;
+using AccountService.Interfaces.RepositoryInterfaces;
 using RepoDb;
 
 namespace AccountService.Repositories
 {
-    public class RoleRepository : IRepository<Role>
+    public class RoleRepository : IRoleRepository
     {
         private readonly IDatabase _database;
 
@@ -12,9 +13,18 @@ namespace AccountService.Repositories
         {
             this._database = database;
         }
-        public Task<object> AddAsync(Role entity)
+        public async Task<object> AddAsync(Role entity)
         {
-            throw new NotImplementedException();
+            using (var connection = _database.Connect())
+            {
+                var roleId = await GetByNameAsync(entity.Name);
+                if (roleId != null)
+                {
+                    throw new Exception("Role is existed");
+                }
+                var newId = await connection.InsertAsync(entity);
+                return newId;
+            }
         }
 
         public Task<object> DeleteAsync(object id)
@@ -30,9 +40,23 @@ namespace AccountService.Repositories
             }
         }
 
-        public Task<Role?> GetByIdAsync(object id)
+        public async Task<Role?> GetByIdAsync(object id)
         {
-            throw new NotImplementedException();
+            using (var connection = _database.Connect())
+            {
+                var role = await connection.QueryAsync<Role>(id);
+                return role.FirstOrDefault();
+            }
+        }
+
+        public async Task<object?> GetByNameAsync(string roleName)
+        {
+            using (var connection = _database.Connect())
+            {
+                string queryString = "SELECT Id FROM Role WHERE Name = @Name";
+                var roleId = await connection.ExecuteScalarAsync(queryString, new { Name = roleName});
+                return roleId;
+            }
         }
 
         public Task<object> UpdateAsync(Role entity)

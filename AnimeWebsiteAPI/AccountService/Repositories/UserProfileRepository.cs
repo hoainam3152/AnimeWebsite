@@ -54,5 +54,14 @@ namespace AccountService.Repositories
         {
             throw new NotImplementedException();
         }
+
+        public async Task<UserProfile?> FindByEmailAsync(string email)
+        {
+            using (var connection = _database.Connect())
+            {
+                var user = await connection.QueryAsync<UserProfile>(user => user.Email == email);
+                return user.FirstOrDefault();
+            }
+        }
     }
 }
