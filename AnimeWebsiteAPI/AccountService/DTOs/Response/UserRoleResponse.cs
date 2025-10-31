@@ -1,9 +1,6 @@
-﻿using Microsoft.AspNetCore.Identity;
-using System.Data;
-
-namespace AccountService.Entities
+﻿namespace AccountService.DTOs.Response
 {
-    public class UserRole
+    public class UserRoleResponse
     {
         public string UserId { get; set; } = string.Empty;
         public string RoleId { get; set; } = string.Empty;

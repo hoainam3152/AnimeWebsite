@@ -29,13 +29,17 @@ builder.Services.AddScoped<IRoleService, RoleService>();
 builder.Services.AddScoped<IUserProfileRepository, UserProfileRepository>();
 builder.Services.AddScoped<IUserProfileService, UserProfileService>();
 
+//UserRole Service
+builder.Services.AddScoped<IUserRoleRepository, UserRoleRepository>();
+builder.Services.AddScoped<IUserRoleService, UserRoleService>();
+
 //Initialize RepoDb
 GlobalConfiguration.Setup().UseSqlServer();
 
 //Regiter HttpClient Factory
-builder.Services.AddHttpClient("UserRole", client =>
+builder.Services.AddHttpClient("Account", client =>
 {
-    client.BaseAddress = new Uri("");
+    client.BaseAddress = new Uri("https://localhost:7155/");
     client.Timeout = TimeSpan.FromSeconds(60);
 });
 

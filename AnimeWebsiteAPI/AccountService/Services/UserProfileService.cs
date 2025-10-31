@@ -1,9 +1,14 @@
-﻿using AccountService.DTOs.Requests;
+﻿using System.Net.Mime;
+using System.Text;
+using System.Text.Json;
+using AccountService.Constants;
+using AccountService.DTOs.Requests;
 using AccountService.DTOs.Response;
 using AccountService.Entities;
 using AccountService.Helpers;
 using AccountService.Interfaces.RepositoryInterfaces;
 using AccountService.Interfaces.ServiceInterfaces;
+using AutoMapper;
 
 namespace AccountService.Services
 {
@@ -12,13 +17,16 @@ namespace AccountService.Services
         private readonly IUserProfileRepository _userRepository;
         private const int EmailExistsErrorCode = -1;
         private readonly IHttpClientFactory _httpClientFactory;
+        private readonly IMapper _mapper;
 
         public UserProfileService(
-            IUserProfileRepository userRepository
-            , IHttpClientFactory httpClientFactory)
+            IUserProfileRepository userRepository, 
+            IHttpClientFactory httpClientFactory,
+            IMapper mapper)
         {
             this._userRepository = userRepository;
             _httpClientFactory = httpClientFactory;
+            _mapper = mapper;
         }
 
         public async Task<object?> AddAsync(UserProfileRequest entity)
@@ -31,11 +39,12 @@ namespace AccountService.Services
             }
 
             string passwordHash = Pbkdf2Hasher.HashPassword(entity.Password);
+            string newId = Guid.NewGuid().ToString();
 
             UserProfile newUser = new UserProfile
             {
-                //Id = Guid.NewGuid().ToString(),
-                Id = SequentialGuid.Generate().ToString(),
+                Id = newId,
+                //Id = SequentialGuid.Generate().ToString(),
                 UserName = entity.UserName,
                 Email = entity.Email,
                 PasswordHash = passwordHash,
@@ -46,20 +55,56 @@ namespace AccountService.Services
 
             if (result != null)
             {
-                HttpClient client = _httpClientFactory.CreateClient("UserRole");
+                try
+                {
+                    HttpClient client = _httpClientFactory.CreateClient("Account");
+
+                    ApiResponse? role = await client.GetFromJsonAsync<ApiResponse>(
+                        $"api/v1/roles/role-name?roleName={ApplicationRoles.User}",
+                        new JsonSerializerOptions(JsonSerializerDefaults.Web)
+                        );
+                    if (role == null || role.Data == null)
+                    {
+                        throw new Exception("Default role not found and cancel register account");
+                    }
+
+                    var postData = new Dictionary<string, string>
+                    {
+                        { "userId", newId },
+                        { "roleId", role.Data.ToString() }
+                    };
+
+                    using StringContent json = new(
+                        JsonSerializer.Serialize(
+                            postData,
+                            new JsonSerializerOptions(JsonSerializerDefaults.Web)
+                            ),
+                            Encoding.UTF8,
+                            MediaTypeNames.Application.Json
+                        );
+                    using HttpResponseMessage httpResponse = await client.PostAsync("/api/v1/user-roles", json);
+
+                    httpResponse.EnsureSuccessStatusCode();
+                }
+                catch (Exception)
+                {
+                    await DeleteAsync(newUser.Id);
+                    throw;
+                }
             }
 
             return result;
         }
 
-        public Task<object> DeleteAsync(object id)
+        public async Task<object> DeleteAsync(object id)
         {
-            throw new NotImplementedException();
+            return await _userRepository.DeleteAsync(id);
         }
 
-        public Task<IEnumerable<UserProfileResponse?>> GetAllAsync()
+        public async Task<IEnumerable<UserProfileResponse?>> GetAllAsync()
         {
-            throw new NotImplementedException();
+            var users = await _userRepository.GellAllAsync();
+            return _mapper.Map<IEnumerable<UserProfileResponse>>(users);
         }
 
         public Task<UserProfileResponse?> GetByIdAsync(object id)
