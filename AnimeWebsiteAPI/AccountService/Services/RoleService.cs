@@ -21,7 +21,7 @@ namespace AccountService.Services
         public async Task<object?> AddAsync(RoleCreateRequest entity)
         {
             Role role = new Role {
-                Id = Guid.NewGuid().ToString(),
+                Id = Guid.NewGuid().ToString("N"),
                 Name = entity.Name 
             };
             var newId = await _roleRepository.AddAsync(role);

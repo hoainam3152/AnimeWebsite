@@ -9,7 +9,7 @@ using RepoDb.Extensions;
 namespace AccountService.Controllers
 {
     [ApiController]
-    [Route("api/v1/[controller]")]
+    [Route("api/v1/user-profile")]
     public class UserProfileController : BaseController
     {
         private readonly IUserProfileService _userService;
@@ -19,7 +19,7 @@ namespace AccountService.Controllers
             this._userService = userService;
         }
 
-        [HttpPost("SignUp")]
+        [HttpPost("sign-up")]
         public async Task<IActionResult> SignUp(UserProfileRequest request)
         {
             try
@@ -44,7 +44,7 @@ namespace AccountService.Controllers
             }
         }
 
-        [HttpPost("SignIn")]
+        [HttpPost("sign-in")]
         public async Task<IActionResult> SignIn(string email, string password)
         {
             try

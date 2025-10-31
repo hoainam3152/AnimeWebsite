@@ -9,7 +9,15 @@ namespace AccountService.Helpers
     {
         public MapperProfile()
         {
+            //Role Service
             CreateMap<Role, RoleResponse>();
+
+            //User Service
+            CreateMap<UserProfile, UserProfileResponse>();
+
+            //UserRole Service
+            CreateMap<UserRoleRequest, UserRole>();
+            CreateMap<UserRole, UserRoleResponse>();
         }
     }
 }

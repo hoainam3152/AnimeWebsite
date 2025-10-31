@@ -18,14 +18,19 @@ namespace AccountService.Repositories
         {
             using (var connection = _database.Connect())
             {
-                var newId = await connection.InsertAsync(entity);
-                return newId; 
+                //var newId = await connection.InsertAsync(entity);
+                //return newId; 
+                return await connection.InsertAsync(entity);
             }
         }
 
-        public Task<object> DeleteAsync(object id)
+        public async Task<object> DeleteAsync(object id)
         {
-            throw new NotImplementedException();
+            using (var connection = _database.Connect())
+            {
+                var result = await connection.DeleteAsync(id);
+                return result;
+            }
         }
 
         public async Task<bool> IsEmailExistAsync(string email)
@@ -45,14 +50,22 @@ namespace AccountService.Repositories
             }
         }
 
-        public Task<UserProfile?> GetByIdAsync(object id)
+        public async Task<UserProfile?> GetByIdAsync(object id)
         {
-            throw new NotImplementedException();
+            using (var connection = _database.Connect())
+            {
+                var users = await connection.QueryAsync<UserProfile>(id);
+                return users.FirstOrDefault();
+            }
         }
 
-        public Task<object> UpdateAsync(UserProfile entity)
+        public async Task<object> UpdateAsync(UserProfile entity)
         {
-            throw new NotImplementedException();
+            using (var connection = _database.Connect())
+            {
+                var result = await connection.UpdateAsync(entity);
+                return result;
+            }
         }
 
         public async Task<UserProfile?> FindByEmailAsync(string email)
