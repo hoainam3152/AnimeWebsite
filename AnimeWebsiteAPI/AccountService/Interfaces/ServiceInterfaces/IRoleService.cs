@@ -7,5 +7,6 @@ namespace AccountService.Interfaces.ServiceInterfaces
     public interface IRoleService: IService<RoleCreateRequest, RoleResponse>
     {
         Task<object?> GetByNameAsync(string roleName);
+        Task<IEnumerable<string>> GetUserRolesAsync(string userId);
     }
 }

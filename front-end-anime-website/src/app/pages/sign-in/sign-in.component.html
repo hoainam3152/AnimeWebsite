@@ -20,16 +20,19 @@
             <div class="col-lg-6">
                 <div class="login__form">
                     <h3>Login</h3>
-                    <form action="#">
+                    <form [formGroup]="loginForm" (ngSubmit)="handleSignInButton()">
                         <div class="input__item">
-                            <input type="text" placeholder="Email address">
+                            <input type="text" placeholder="Email address" formControlName="email">
                             <span class="icon_mail"></span>
                         </div>
                         <div class="input__item">
-                            <input type="text" placeholder="Password">
+                            <input type="password" placeholder="Password" formControlName="password">
                             <span class="icon_lock"></span>
                         </div>
                         <button type="submit" class="site-btn">Login Now</button>
+                        @if (token$ | async; as token){
+                            <div style="color: whitesmoke;">{{ token }}</div>
+                        }
                     </form>
                     <a href="#" class="forget_pass">Forgot Your Password?</a>
                 </div>
@@ -47,8 +50,7 @@
                     <div class="login__social__links">
                         <span>or</span>
                         <ul>
-                            <li><a href="#" class="facebook"><i class="fa fa-facebook"></i> Sign in With
-                                    Facebook</a></li>
+                            <li><a href="#" class="facebook"><i class="fa fa-facebook"></i> Sign in With Facebook</a></li>
                             <li><a href="#" class="google"><i class="fa fa-google"></i> Sign in With Google</a></li>
                             <li><a href="#" class="twitter"><i class="fa fa-twitter"></i> Sign in With Twitter</a>
                             </li>

@@ -1,5 +1,8 @@
+- https://angular.dev/
 - https://learn.microsoft.com/en-us/dotnet/core/extensions/httpclient-factory (IHttpClientFactory)
 - https://repodb.net/tutorial/get-started-sqlserver (RepoDb)
+- https://learn.microsoft.com/en-us/aspnet/core/security/authentication/?view=aspnetcore-8.0 (Authentication)
+- https://learn.microsoft.com/en-us/aspnet/core/security/authorization/introduction?view=aspnetcore-8.0 (Authorization)
 
 - POST:
 curl -X 'POST' \

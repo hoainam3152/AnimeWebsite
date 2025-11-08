@@ -45,11 +45,11 @@ namespace AccountService.Controllers
         }
 
         [HttpPost("sign-in")]
-        public async Task<IActionResult> SignIn(string email, string password)
+        public async Task<IActionResult> SignIn(UserProfileLoginRequest request)
         {
             try
             {
-                var result = await _userService.Authentication(email, password);
+                var result = await _userService.Authentication(request.Email, request.Password);
 
                 if (result.IsNullOrEmpty())
                 {

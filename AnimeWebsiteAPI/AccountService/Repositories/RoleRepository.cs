@@ -36,6 +36,7 @@ namespace AccountService.Repositories
         {
             using (var connection = _database.Connect())
             {
+                var re = await connection.QueryAllAsync<Role>();
                 return await connection.QueryAllAsync<Role>();
             }
         }
@@ -56,6 +57,20 @@ namespace AccountService.Repositories
                 string queryString = "SELECT Id FROM Role WHERE Name = @Name";
                 var roleId = await connection.ExecuteScalarAsync(queryString, new { Name = roleName});
                 return roleId;
+            }
+        }
+
+        public async Task<IEnumerable<string>> GetUserRolesAsync(string userId)
+        {
+            using (var connection = _database.Connect())
+            { 
+                string queryString = @"SELECT Role.Name
+                                    FROM Role
+                                    INNER JOIN 
+	                                    UserRole AS UR ON Role.Id = UR.RoleId
+                                    WHERE UR.UserId = @userId;";
+                var roles = await connection.ExecuteQueryAsync<string>(queryString, new { userId = userId });
+                return roles;
             }
         }
 

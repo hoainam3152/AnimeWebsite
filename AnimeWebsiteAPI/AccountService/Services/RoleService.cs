@@ -50,6 +50,12 @@ namespace AccountService.Services
             return await _roleRepository.GetByNameAsync(roleName);
         }
 
+        public Task<IEnumerable<string>> GetUserRolesAsync(string userId)
+        {
+            var userRoles = _roleRepository.GetUserRolesAsync(userId);
+            return userRoles;
+        }
+
         public Task<object> UpdateAsync(RoleCreateRequest entity)
         {
             throw new NotImplementedException();

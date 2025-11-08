@@ -1,5 +1,5 @@
-export interface IResponseData<Entity> {
-    status: number;
+export interface IResponseData<TEntity> {
+    statusCode: number;
     message: string;
-    data: Entity;
+    data: TEntity;
 }
