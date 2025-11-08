@@ -1,4 +1,6 @@
-﻿using System.Net.Mime;
+﻿using System.IdentityModel.Tokens.Jwt;
+using System.Net.Mime;
+using System.Security.Claims;
 using System.Text;
 using System.Text.Json;
 using AccountService.Constants;
@@ -9,24 +11,32 @@ using AccountService.Helpers;
 using AccountService.Interfaces.RepositoryInterfaces;
 using AccountService.Interfaces.ServiceInterfaces;
 using AutoMapper;
+using Microsoft.IdentityModel.Tokens;
 
 namespace AccountService.Services
 {
     public class UserProfileService : IUserProfileService
     {
-        private readonly IUserProfileRepository _userRepository;
         private const int EmailExistsErrorCode = -1;
+
+        private readonly IUserProfileRepository _userRepository;
         private readonly IHttpClientFactory _httpClientFactory;
         private readonly IMapper _mapper;
+        private readonly IConfiguration _configuration;
+        private readonly IRoleService _roleService;
 
         public UserProfileService(
             IUserProfileRepository userRepository, 
             IHttpClientFactory httpClientFactory,
-            IMapper mapper)
+            IMapper mapper,
+            IConfiguration configuration,
+            IRoleService roleService)
         {
-            this._userRepository = userRepository;
+            _userRepository = userRepository;
             _httpClientFactory = httpClientFactory;
             _mapper = mapper;
+            _configuration = configuration;
+            _roleService = roleService;
         }
 
         public async Task<object?> AddAsync(UserProfileRequest entity)
@@ -57,23 +67,19 @@ namespace AccountService.Services
             {
                 try
                 {
-                    HttpClient client = _httpClientFactory.CreateClient("Account");
-
-                    ApiResponse? role = await client.GetFromJsonAsync<ApiResponse>(
-                        $"api/v1/roles/role-name?roleName={ApplicationRoles.User}",
-                        new JsonSerializerOptions(JsonSerializerDefaults.Web)
-                        );
-                    if (role == null || role.Data == null)
+                    var roleId = await _roleService.GetByNameAsync(ApplicationRoles.User);
+                    if (roleId == null)
                     {
-                        throw new Exception("Default role not found and cancel register account");
+                        throw new Exception("Role default not found and cancel register account");
                     }
 
                     var postData = new Dictionary<string, string>
-                    {
-                        { "userId", newId },
-                        { "roleId", role.Data.ToString() }
-                    };
+                        {
+                            { "userId", newId },
+                            { "roleId", roleId.ToString() }
+                        };
 
+                    HttpClient client = _httpClientFactory.CreateClient("Account");
                     using StringContent json = new(
                         JsonSerializer.Serialize(
                             postData,
@@ -92,7 +98,6 @@ namespace AccountService.Services
                     throw;
                 }
             }
-
             return result;
         }
 
@@ -131,7 +136,46 @@ namespace AccountService.Services
                 return String.Empty;
             }
 
-            return user.Id;
+            return await GenerateJwtToken(user);
+        }
+
+        private async Task<string> GenerateJwtToken(UserProfile user)
+        {
+            // Create Payload
+            var claims = new List<Claim>
+            {
+                new Claim(ClaimTypes.NameIdentifier, user.Id),
+                new Claim(ClaimTypes.Name, user.UserName),
+                new Claim(ClaimTypes.Email, user.Email)
+            };
+
+            //Find and create roles claims
+            var userRoles = await _roleService.GetUserRolesAsync(user.Id);
+            foreach (string role in userRoles)
+            {
+                claims.Add(new Claim(ClaimTypes.Role, role));
+            }
+
+            //Create Signature Key
+            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:Key"]));
+            var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha512Signature);
+
+            //Create Token Descriptor
+            var tokenDescriptor = new SecurityTokenDescriptor
+            {
+                Subject = new ClaimsIdentity(claims),
+                Expires = DateTime.Now.AddMinutes(30),
+                Issuer = _configuration["Jwt:Issuer"],
+                Audience = _configuration["Jwt:Audience"],
+                SigningCredentials = creds
+            };
+
+
+            //Create Token and return JWT
+            var tokenHandler = new JwtSecurityTokenHandler();
+            var token = tokenHandler.CreateToken(tokenDescriptor);
+
+            return tokenHandler.WriteToken(token);
         }
     }
 }

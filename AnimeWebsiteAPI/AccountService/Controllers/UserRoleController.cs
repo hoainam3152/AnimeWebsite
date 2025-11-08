@@ -3,11 +3,13 @@ using AccountService.Constants;
 using AccountService.DTOs.Requests;
 using AccountService.Interfaces.ServiceInterfaces;
 using CoreApiResponse;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace AccountService.Controllers
 {
+    [Authorize]
     [Route("api/v1/user-roles")]
     [ApiController]
     public class UserRoleController : BaseController

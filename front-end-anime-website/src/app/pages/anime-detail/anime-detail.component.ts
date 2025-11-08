@@ -1,10 +1,9 @@
-import { Component, effect, inject, input, OnInit } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { AnimeService } from '../../core/service/anime.service';
-import { map, Observable, of, switchMap } from 'rxjs';
+import { catchError, Observable, of, switchMap } from 'rxjs';
 import { IAnime } from '../../core/models/interfaces/anime.interface';
 import { AsyncPipe } from '@angular/common';
 import { ActivatedRoute, ParamMap, Router } from '@angular/router';
-import { IResponseData } from '../../core/models/interfaces/response-data.interface';
 import { AccountService } from '../../core/service/account.service';
 
 @Component({
@@ -15,6 +14,7 @@ import { AccountService } from '../../core/service/account.service';
 })
 export class AnimeDetailComponent implements OnInit {
   anime$!: Observable<IAnime>;
+  errorMessage: string | null = null;
 
   private animeService = inject(AnimeService);
   private route = inject(ActivatedRoute);
@@ -22,32 +22,41 @@ export class AnimeDetailComponent implements OnInit {
   private router = inject(Router);
 
   ngOnInit(): void {
-    // this.getAnimeDetail();
-    this.anime$ = of(this.createMockAnime());
+    this.getAnimeDetail();
   }
 
-  createMockAnime(): IAnime {
-    return {
+  createMockAnime(): Observable<IAnime> {
+    const mockData: IAnime = {
       animeId: 999,
       title: 'Anime Giả Lập: Tạm Thời',
       alternateTitle: 'Mock Data Testing',
       coverImage: 'assets/anime/details-pic.jpg',
       synopsis: 'Đây là dữ liệu anime giả lập, dùng cho mục đích kiểm thử mà không cần gọi API.',
-    } as IAnime
+    }
+    return of(mockData);
   }
 
   getAnimeDetail(): void {
+    let idTemp = this.route.paramMap.pipe()
     this.anime$ = this.route.paramMap.pipe(
       switchMap((params: ParamMap) => {
         const idString = params.get('id');
 
         if (idString) {
-          return this.animeService.getAnimeDetail(Number(idString));
+          return this.animeService.getAnimeDetail(Number(idString)).pipe(
+            catchError(err => {
+              this.errorMessage = err.message || 'Lỗi tải dữ liệu';
+              console.log(this.errorMessage);
+              return this.createMockAnime();
+            })
+          );
         }
-
-        return new Observable<IResponseData<IAnime>>();
-      }),
-      map((response: IResponseData<IAnime>) => response.data)
+        else {
+            this.errorMessage = 'Không tìm thấy ID trên URL.';
+            console.log(this.errorMessage);
+            return this.createMockAnime();
+        }
+      })
     );
   }
 

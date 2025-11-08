@@ -3,10 +3,12 @@ using AccountService.Constants;
 using AccountService.DTOs.Requests;
 using AccountService.Interfaces.ServiceInterfaces;
 using CoreApiResponse;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace AccountService.Controllers
 {
+    [Authorize]
     [ApiController]
     [Route("api/v1/roles")]
     public class RoleController : BaseController
@@ -19,6 +21,7 @@ namespace AccountService.Controllers
         }
 
         [HttpGet]
+        [Authorize]
         public async Task<IActionResult> GetAllRolesAsync()
         {
             try

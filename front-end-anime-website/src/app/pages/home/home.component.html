@@ -63,11 +63,16 @@
                         </div>
                     </div>
                     <div class="row">
-                        @for (anime of animesList; track $index) {
-                        <div class="col-lg-4 col-md-6 col-sm-6">
-                            <app-anime-item [anime]="anime"></app-anime-item>
-                        </div>
-                    }
+                        @if (animes$ | async; as animes) {
+                            @for (anime of animes; track $index) {
+                                <div class="col-lg-4 col-md-6 col-sm-6">
+                                    <app-anime-item [anime]="anime"></app-anime-item>
+                                </div>
+                            }
+                        }
+                        @else {
+                            <p>Đang tải chi tiết sản phẩm hoặc không tìm thấy...</p>
+                        }
                     </div>
                 </div>
                 <div class="popular__product">
@@ -84,11 +89,16 @@
                         </div>
                     </div>
                     <div class="row">
-                        @for (anime of animesList; track $index) {
-                        <div class="col-lg-4 col-md-6 col-sm-6">
-                            <app-anime-item [anime]="anime"></app-anime-item>
-                        </div>
-                    }
+                        @if (animes$ | async; as animes) {
+                            @for (anime of animes; track $index) {
+                                <div class="col-lg-4 col-md-6 col-sm-6">
+                                    <app-anime-item [anime]="anime"></app-anime-item>
+                                </div>
+                            }
+                        }
+                        @else {
+                            <p>Đang tải chi tiết sản phẩm hoặc không tìm thấy...</p>
+                        }
                     </div>
                 </div>
                 <div class="recent__product">
@@ -105,11 +115,16 @@
                         </div>
                     </div>
                     <div class="row">
-                        @for (anime of animesList; track $index) {
-                        <div class="col-lg-4 col-md-6 col-sm-6">
-                            <app-anime-item [anime]="anime"></app-anime-item>
-                        </div>
-                    }
+                        @if (animes$ | async; as animes) {
+                            @for (anime of animes; track $index) {
+                                <div class="col-lg-4 col-md-6 col-sm-6">
+                                    <app-anime-item [anime]="anime"></app-anime-item>
+                                </div>
+                            }
+                        }
+                        @else {
+                            <p>Đang tải chi tiết sản phẩm hoặc không tìm thấy...</p>
+                        }
                     </div>
                 </div>
                 <div class="live__product">
@@ -126,11 +141,16 @@
                         </div>
                     </div>
                     <div class="row">
-                        @for (anime of animesList; track $index) {
-                        <div class="col-lg-4 col-md-6 col-sm-6">
-                            <app-anime-item [anime]="anime"></app-anime-item>
-                        </div>
-                    }
+                        @if (animes$ | async; as animes) {
+                            @for (anime of animes; track $index) {
+                                <div class="col-lg-4 col-md-6 col-sm-6">
+                                    <app-anime-item [anime]="anime"></app-anime-item>
+                                </div>
+                            }
+                        }
+                        @else {
+                            <p>Đang tải chi tiết sản phẩm hoặc không tìm thấy...</p>
+                        }
                     </div>
                 </div>
             </div>

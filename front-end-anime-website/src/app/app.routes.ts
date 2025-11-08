@@ -4,11 +4,10 @@ import { AnimeDetailComponent } from './pages/anime-detail/anime-detail.componen
 
 export const routes: Routes = [
     { path: '', component: HomeComponent },
-    { path: 'anime-detail/:id', component: AnimeDetailComponent},
-    // { 
-    //     path: 'anime-detail/:id', 
-    //     loadComponent: () => import('./pages/anime-detail/anime-detail.component').then((m) => m.AnimeDetailComponent),
-    // },
+    { 
+        path: 'anime-detail/:id', 
+        loadComponent: () => import('./pages/anime-detail/anime-detail.component').then((m) => m.AnimeDetailComponent),
+    },
     { 
         path: 'anime-watching', 
         loadComponent: () => import('./pages/anime-watching/anime-watching.component').then((m) => m.AnimeWatchingComponent),
