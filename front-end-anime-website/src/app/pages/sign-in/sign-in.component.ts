@@ -1,4 +1,4 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { AccountService } from '../../core/service/account.service';
 import { IAccountLogin } from '../../core/models/interfaces/account-login.interface';

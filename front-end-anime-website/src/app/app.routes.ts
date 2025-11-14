@@ -20,4 +20,12 @@ export const routes: Routes = [
         path: 'sign-up', 
         loadComponent: () => import('./pages/sign-up/sign-up.component').then((m) => m.SignUpComponent),
     },
+    { 
+        path: 'search', 
+        loadComponent: () => import('./pages/search/search.component').then((m) => m.SearchComponent),
+    },
+    { 
+        path: 'animes', 
+        loadComponent: () => import('./pages/anime/anime.componet').then((m) => m.AnimeComponet),
+    },
 ];
