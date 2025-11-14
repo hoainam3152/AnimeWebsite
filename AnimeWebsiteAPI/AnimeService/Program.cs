@@ -1,6 +1,7 @@
 using AnimeService.Entities;
 using AnimeService.Helpers;
 using AnimeService.Interfaces;
+using AnimeService.Interfaces.RepositoryInterfaces;
 using AnimeService.Interfaces.ServiceInterfaces;
 using AnimeService.Repositories;
 using AnimeService.Services;
@@ -20,7 +21,7 @@ builder.Services.AddSwaggerGen();
 
 //Register Services
 builder.Services.AddScoped<IDatabase, SqlServerDatabase>();
-builder.Services.AddScoped<IRepository<Anime>, AnimeRepository>();
+builder.Services.AddScoped<IAnimeRepository, AnimeRepository>();
 builder.Services.AddScoped<IAnimeService, AnimeServiceImp>();
 
 //Add CORS policy

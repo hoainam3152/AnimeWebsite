@@ -27,7 +27,7 @@ export class AnimeDetailComponent implements OnInit {
 
   createMockAnime(): Observable<IAnime> {
     const mockData: IAnime = {
-      animeId: 999,
+      id: 999,
       title: 'Anime Giả Lập: Tạm Thời',
       alternateTitle: 'Mock Data Testing',
       coverImage: 'assets/anime/details-pic.jpg',
@@ -37,7 +37,6 @@ export class AnimeDetailComponent implements OnInit {
   }
 
   getAnimeDetail(): void {
-    let idTemp = this.route.paramMap.pipe()
     this.anime$ = this.route.paramMap.pipe(
       switchMap((params: ParamMap) => {
         const idString = params.get('id');
@@ -63,7 +62,7 @@ export class AnimeDetailComponent implements OnInit {
   handleWatchButton(): void {
     if (this.accountService.isLoggedIn()) {
       console.log("da dang nhap");
-      this.router.navigate(['anime-watching'])
+      this.router.navigate(['anime-watching']);
     }
     else {
       console.log("chua dang nhap");

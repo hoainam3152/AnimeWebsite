@@ -1,3 +1,15 @@
+.search-model-form {
+	padding: 0 15px;
+}
+
+.search-model-form input {
+	font-size: 100%;
+	border: none;
+	border-bottom: 2px solid #333;
+	background: 0 0;
+	color: inherit;
+}
+
 /*---------------------
   Header
 -----------------------*/
@@ -98,11 +110,18 @@
 	padding: 20px 0 15px;
 }
 
-.header__right a {
+.header__right a, .header__right form {
 	display: inline-block;
-	font-size: 18px;
+	font-size: 15px;
 	color: #ffffff;
 	margin-right: 30px;
+}
+
+.header__right form button {
+	background: transparent;
+	border: none;
+	color: inherit;
+	padding: 0;
 }
 
 .header__right a:last-child {

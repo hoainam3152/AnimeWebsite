@@ -1,0 +1,40 @@
+<!-- Product Section Begin -->
+<section class="product spad">
+    <div class="container">
+        <div class="anime-grid">
+            <div class="trending__product">
+                <div class="row">
+                    <div>
+                        <div class="section-title">
+                            <h4>Kết quả tìm kiếm "{{ queryString }}"</h4>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    @if (pagedAnimes$ | async; as animes) {
+                    @if (animes.length > 0) {
+                    @for (anime of animes; track $index) {
+                    <div class="col-lg-3 col-md-6 col-sm-6">
+                        <app-anime-item [anime]="anime"></app-anime-item>
+                    </div>
+                    }
+                    } @else {
+                    <p class="p-not-found">⚠️ Rất tiếc, không tìm thấy kết quả hoặc đã có lỗi xảy ra. Vui lòng thử lại.
+                    </p>
+                    }
+                    }
+                    @else {
+                    <p class="p-not-found">Đang chờ kết quả tìm kiếm...</p>
+                    }
+                </div>
+                <div class="paginator">
+                        <mat-paginator [length]="(length$ | async) || 0"
+                            [pageIndex]="pageEventSubject.value.pageIndex" [pageSize]="pageEventSubject.value.pageSize"
+                            [showFirstLastButtons]="true" (page)="handlePageEvent($event)"
+                            aria-label="Chọn trang cho kết quả tìm kiếm"></mat-paginator>
+                    </div>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- Product Section End -->

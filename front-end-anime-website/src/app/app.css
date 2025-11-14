@@ -1,0 +1,17 @@
+.app-container {
+    display: grid;
+    min-height: 100%;
+    grid-template-rows: auto 1fr auto;
+}
+
+app-header {
+  grid-row: 1;
+}
+
+.content-wrapper {
+  grid-row: 2;
+}
+
+app-footer {
+  grid-row: 3;
+}

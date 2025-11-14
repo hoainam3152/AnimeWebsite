@@ -1,12 +1,13 @@
 ﻿using System.Net;
 using AnimeService.Constants;
+using AnimeService.DTOs.Requests;
 using AnimeService.Interfaces.ServiceInterfaces;
 using CoreApiResponse;
 using Microsoft.AspNetCore.Mvc;
 
 namespace AnimeService.Controllers
 {
-    [Route("v1/api/[controller]")]
+    [Route("v1/api/animes")]
     [ApiController]
     public class AnimeController : BaseController
     {
@@ -18,20 +19,20 @@ namespace AnimeService.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetAllAnimesAsync()
+        public async Task<IActionResult> GetAllAnimesAsync(int pageIndex, int pageSize, string? sortBy, string? order, string? select)
         {
             try
             {
-                var animes = await _animeService.GetAllAsync();
-                if (animes.Any())
+                var pagedAnimes = await _animeService.GetItemsAsync(pageIndex, pageSize, sortBy, order, select);
+                if (pagedAnimes != null)
                 {
-                    return CustomResult(ResponseMessage.SUCCESSFUL, animes, HttpStatusCode.OK);
+                    return Ok(pagedAnimes);
                 }
-                return CustomResult(ResponseMessage.EMPTY, HttpStatusCode.NotFound);
+                return NotFound(ResponseMessage.EMPTY);
             }
             catch (Exception ex)
             {
-                return CustomResult(ex.Message, HttpStatusCode.BadRequest);
+                return BadRequest(ex.Message);
             }
         }
 
@@ -57,6 +58,24 @@ namespace AnimeService.Controllers
             else
             {
                 return BadRequest(ModelState);
+            }
+        }
+
+        [HttpGet("search")]
+        public async Task<IActionResult> SearchAnimesAsync(string q)
+        {
+            try
+            {
+                var anime = await _animeService.SearchAsync(q);
+                if (anime.Any())
+                {
+                    return CustomResult(ResponseMessage.SUCCESSFUL, anime, HttpStatusCode.OK);
+                }
+                return CustomResult(ResponseMessage.DATA_NOT_FOUND, HttpStatusCode.NotFound);
+            }
+            catch (Exception ex)
+            {
+                return CustomResult(ex.Message, HttpStatusCode.BadRequest);
             }
         }
     }
